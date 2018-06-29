@@ -26,11 +26,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    qpaintwidget.cpp
+    qpyramidview.cpp
 
 HEADERS += \
         mainwindow.h \
-    qpaintwidget.h
+    qpyramidview.h
 
 FORMS += \
         mainwindow.ui

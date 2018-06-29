@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
-    w.setFixedSize(QSize(600,600));
+    w.setFixedSize(QSize(650,650));
     w.setWindowTitle("Pyramid Viewer");
     w.show();
 

@@ -8,10 +8,13 @@ class QPyramidView : public QWidget
     Q_OBJECT
 
 public:
-    QPyramidView(QString fileName);
+    QPyramidView(QString fileName, QWidget * parent = 0);
     QString fileName;
+    ~QPyramidView();
 
 private:
+    QSize fileSize;
+    void setFileSize();
 
 };
 

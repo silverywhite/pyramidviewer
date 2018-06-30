@@ -22,13 +22,14 @@ public:
 
 private slots:
     void open();
+    void chooseFile();
 
 private:
     Ui::MainWindow *ui;
     QScrollArea* q;
     QString currentFile = "";
     QLabel *imageLabel;
-    QPyramidView *someImg;
+    QList<QPyramidView*> pyramidFiles;
     QMenu* fileMenu;
     QAction *openAct;
     QString fileName;

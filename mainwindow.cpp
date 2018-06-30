@@ -9,16 +9,21 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     imageLabel = new QLabel;
     imageLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     q = new QScrollArea(this);
-    loadImage();
     q->setFixedSize(550,550);
-    q->setWidget(imageLabel);
     q->setWidgetResizable(true);
     q->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     q->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+    loadImage();
+    q->setWidget(imageLabel);
     ui->verticalLayout->addWidget(q);
+
+    connect(ui->fileComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseFile()));
+
     createAction();
     createMenu();
 }
@@ -42,11 +47,25 @@ void MainWindow::open()
                 file.errorString());
             return;
         }
-
-        someImg = new QPyramidView(fileName);
+        QPyramidView *someImg = new QPyramidView(fileName);
+        pyramidFiles.append(someImg);
         currentFile = fileName;
+        ui->fileComboBox->addItem(fileName);
         loadImage();
     }
+}
+
+void MainWindow::chooseFile()
+{
+    int i;
+    QString key = ui->fileComboBox->currentText();
+    for (i = 0; i < pyramidFiles.size(); i++){
+        if(pyramidFiles[i]->fileName == key){
+            break;
+        }
+    }
+    currentFile = pyramidFiles[i]->fileName;
+    loadImage();
 }
 
 void MainWindow::createAction()
@@ -77,3 +96,4 @@ void MainWindow::loadImage() {
     imageLabel->setPixmap(img);
     q->update();
 }
+

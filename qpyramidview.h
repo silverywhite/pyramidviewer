@@ -2,19 +2,25 @@
 #define QPYRAMIDVIEW_H
 
 #include <QWidget>
+#include <QVector>
 
 class QPyramidView : public QWidget
 {
+    friend class MainWindow;
+
     Q_OBJECT
 
 public:
     QPyramidView(QString fileName, QWidget * parent = 0);
-    QString fileName;
     ~QPyramidView();
 
 private:
+    QVector<QSize> pyramidLayers;
+    QString fileName;
     QSize fileSize;
+    int pyramidCoeff = 2;
     void setFileSize();
+    void setLayers();
 
 };
 

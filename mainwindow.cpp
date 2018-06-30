@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->verticalLayout->addWidget(q);
 
     connect(ui->fileComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseFile()));
+    connect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
 
     createAction();
     createMenu();
@@ -51,21 +52,45 @@ void MainWindow::open()
         pyramidFiles.append(someImg);
         currentFile = fileName;
         ui->fileComboBox->addItem(fileName);
+        ui->fileComboBox->setCurrentText(fileName);
         loadImage();
     }
 }
 
+// Происходит при выборе файла
 void MainWindow::chooseFile()
 {
+    disconnect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
+    ui->layerComboBox->clear();
+    connect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
     int i;
     QString key = ui->fileComboBox->currentText();
-    for (i = 0; i < pyramidFiles.size(); i++){
-        if(pyramidFiles[i]->fileName == key){
+    for (currentFileIndex = 0; currentFileIndex < pyramidFiles.size(); currentFileIndex++){
+        if(pyramidFiles[currentFileIndex]->fileName == key){
             break;
         }
     }
-    currentFile = pyramidFiles[i]->fileName;
+    for (i = 0; i < pyramidFiles[currentFileIndex]->pyramidLayers.size(); i++){
+        ui->layerComboBox->addItem(QString::number(i));
+    }
+    currentFile = pyramidFiles[currentFileIndex]->fileName;
     loadImage();
+}
+
+// Происходит при выборе слоя
+void MainWindow::chooseLayer()
+{
+    QPixmap img(currentFile);
+    int layerNumber = ui->layerComboBox->currentIndex();
+    QSize originalSize = pyramidFiles[currentFileIndex]->fileSize;
+    QSize newSize = pyramidFiles[currentFileIndex]->pyramidLayers[layerNumber];
+    ui->actualSize->clear();
+    QString actualSize = QString::number(newSize.width()) + 'x' + QString::number(newSize.height());
+    ui->actualSize->setText(actualSize);
+    img = img.scaled(newSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    img = img.scaled(originalSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    imageLabel->setPixmap(img);
+    q->update();
 }
 
 void MainWindow::createAction()

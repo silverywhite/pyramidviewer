@@ -23,10 +23,12 @@ public:
 private slots:
     void open();
     void chooseFile();
+    void chooseLayer();
 
 private:
     Ui::MainWindow *ui;
     QScrollArea* q;
+    int currentFileIndex;
     QString currentFile = "";
     QLabel *imageLabel;
     QList<QPyramidView*> pyramidFiles;

@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createAction();
     createMenu();
+
 }
 
 MainWindow::~MainWindow()
@@ -36,9 +37,14 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::open()
+void MainWindow::open(bool isFromCommandLine)
 {
-    fileName = QFileDialog::getOpenFileName(0, "Open File", "", "*.png *.jpg");
+    if(!isFromCommandLine){
+        fileName = QFileDialog::getOpenFileName(0, "Open File", "", "*.png *.jpg");
+    }
+    else if(isFromCommandLine){
+        fileName = currentFile;
+    }
     if (fileName.isEmpty())
         return;
     else {
@@ -54,7 +60,12 @@ void MainWindow::open()
         sortFiles();
         currentFile = fileName;
         ui->fileComboBox->setCurrentText(fileName);
+        if(isFromCommandLine){
+            ui->coeffSpinBox->setValue(startCoeff);
+            ui->coeffButton->click();
+        }
         loadImage();
+        //qDebug() << currentFile;
     }
 }
 
@@ -153,4 +164,10 @@ void MainWindow::loadImage() {
     }
     imageLabel->setPixmap(img);
     q->update();
+}
+
+void MainWindow::setFromCommandLine(QString file, double coeff){
+    this->startCoeff = coeff;
+    this->currentFile = file;
+    open(true);
 }

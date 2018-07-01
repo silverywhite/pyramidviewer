@@ -19,9 +19,10 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void setFromCommandLine(QString file, double coeff);
 
 private slots:
-    void open();
+    void open(bool isFromCommandLine = false);
     void chooseFile();
     void chooseLayer();
     void setCoeff();
@@ -30,6 +31,7 @@ private:
     Ui::MainWindow *ui;
     QScrollArea* q;
     int currentFileIndex;
+    double startCoeff = 0;
     QString currentFile = "";
     QLabel *imageLabel;
     QList<QPyramidView*> pyramidFiles;

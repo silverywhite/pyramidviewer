@@ -19,7 +19,7 @@ private:
     QString fileName;
     QSize fileSize;
     int pseudoDiag;
-    int pyramidCoeff = 2;
+    double pyramidCoeff = 2;
     void setFileSize();
     void setLayers();
 

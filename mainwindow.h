@@ -24,6 +24,7 @@ private slots:
     void open();
     void chooseFile();
     void chooseLayer();
+    void setCoeff();
 
 private:
     Ui::MainWindow *ui;

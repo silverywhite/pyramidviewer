@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     q->setWidget(imageLabel);
     ui->verticalLayout->addWidget(q);
 
+    connect(ui->coeffButton, SIGNAL(clicked(bool)), this, SLOT(setCoeff()));
     connect(ui->fileComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseFile()));
     connect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
 
@@ -89,23 +90,40 @@ void MainWindow::chooseFile()
         ui->layerComboBox->addItem(QString::number(i));
     }
     currentFile = pyramidFiles[currentFileIndex]->fileName;
+    ui->coeffSpinBox->setValue(pyramidFiles[currentFileIndex]->pyramidCoeff);
     loadImage();
 }
 
 // Происходит при выборе слоя
 void MainWindow::chooseLayer()
 {
-    QPixmap img(currentFile);
     int layerNumber = ui->layerComboBox->currentIndex();
-    QSize originalSize = pyramidFiles[currentFileIndex]->fileSize;
     QSize newSize = pyramidFiles[currentFileIndex]->pyramidLayers[layerNumber];
     ui->actualSize->clear();
     QString actualSize = QString::number(newSize.width()) + 'x' + QString::number(newSize.height());
     ui->actualSize->setText(actualSize);
-    img = img.scaled(newSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    img = img.scaled(originalSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    imageLabel->setPixmap(img);
-    q->update();
+    if(currentFile != ""){
+        QPixmap img(currentFile);
+        QSize originalSize = pyramidFiles[currentFileIndex]->fileSize;
+        img = img.scaled(newSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        img = img.scaled(originalSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        imageLabel->setPixmap(img);
+        q->update();
+    }
+}
+
+// Происходит, когда  нажимается кнопка задания коэффициента
+void MainWindow::setCoeff() {
+    if(currentFile != ""){
+        pyramidFiles[currentFileIndex]->pyramidCoeff = ui->coeffSpinBox->value();
+        pyramidFiles[currentFileIndex]->setLayers();
+        disconnect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
+        ui->layerComboBox->clear();
+        connect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
+        for (int i = 0; i < pyramidFiles[currentFileIndex]->pyramidLayers.size(); i++){
+            ui->layerComboBox->addItem(QString::number(i));
+        }
+    }
 }
 
 void MainWindow::createAction()
@@ -136,4 +154,3 @@ void MainWindow::loadImage() {
     imageLabel->setPixmap(img);
     q->update();
 }
-

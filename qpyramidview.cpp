@@ -24,12 +24,14 @@ void QPyramidView::setFileSize()
 // Вычисление нужных размеров для слоев
 void QPyramidView::setLayers()
 {
+    pyramidLayers.clear();
     int height = fileSize.height();
     int width = fileSize.width();
     pyramidLayers.push_back(QSize(width, height));
-    while (height > 1 && width > 1){
+    while (true){
         height /= pyramidCoeff;
         width /= pyramidCoeff;
+        if(height < 1 || width < 1) break;
         pyramidLayers.push_back(QSize(width, height));
     }
 }

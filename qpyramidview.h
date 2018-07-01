@@ -10,18 +10,16 @@ class QPyramidView : public QWidget {
     Q_OBJECT
 
 public:
-    QPyramidView(QString fileName, QWidget * parent = 0);
-    ~QPyramidView();
+    QPyramidView(QString fileName, QWidget *parent = 0);
 
 private:
     QVector<QSize> pyramidLayers;
     QString fileName;
     QSize fileSize;
-    int pseudoDiag;
-    double pyramidCoeff = 2;
-    void setFileSize();
-    void setLayers();
-
+    int pseudoDiagonal;
+    double pyramidCoefficient = 2;
+    void getFileSize();
+    void setLayersSize();
 };
 
 #endif // QPYRAMIDVIEW_H

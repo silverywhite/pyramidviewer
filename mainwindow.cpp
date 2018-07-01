@@ -4,9 +4,7 @@
 #include <QScrollArea>
 #include <QLabel>
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),  ui(new Ui::MainWindow){
-
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),  ui(new Ui::MainWindow){
     ui->setupUi(this);
 
     imageLabel = new QLabel;
@@ -27,23 +25,21 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createAction();
     createMenu();
-
 }
 
 MainWindow::~MainWindow(){
-
     q->deleteLater();
     delete ui;
 }
 
 void MainWindow::open(bool isFromCommandLine){
-
     if(!isFromCommandLine){
         fileName = QFileDialog::getOpenFileName(0, "Open File", "", "*.png *.jpg");
     }
     else if(isFromCommandLine){
         fileName = currentFile;
     }
+
     if (fileName.isEmpty())
         return;
     else {
@@ -57,7 +53,7 @@ void MainWindow::open(bool isFromCommandLine){
         }
 
         if (fileinfo.suffix() != "jpg" && fileinfo.suffix() != "png"){
-            QMessageBox::information(this, tr("Unsupported file format"),
+            QMessageBox::information(this, "Unsupported file format",
                 "Please, choose jpeg or png file");
             return;
         }
@@ -68,7 +64,7 @@ void MainWindow::open(bool isFromCommandLine){
         currentFile = fileName;
         ui->fileComboBox->setCurrentText(fileName);
         if(isFromCommandLine){
-            ui->coeffSpinBox->setValue(startCoeff);
+            ui->coeffSpinBox->setValue(startCoefficient);
             ui->coeffButton->click();
         }
         loadImage();
@@ -78,10 +74,12 @@ void MainWindow::open(bool isFromCommandLine){
 // Сортировка файлов по возрастанию диагонали
 void MainWindow::sortFiles(){
     int sortPlace = pyramidFiles.size()-1;
-    while(sortPlace > 0 && (pyramidFiles[sortPlace]->pseudoDiag <= pyramidFiles[sortPlace-1]->pseudoDiag)){
+
+    while(sortPlace > 0 && (pyramidFiles[sortPlace]->pseudoDiagonal <= pyramidFiles[sortPlace-1]->pseudoDiagonal)){
         pyramidFiles.swap(sortPlace, sortPlace-1);
         sortPlace--;
     }
+
     disconnect(ui->fileComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseFile()));
     ui->fileComboBox->clear();
     connect(ui->fileComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseFile()));
@@ -95,28 +93,31 @@ void MainWindow::chooseFile(){
     disconnect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
     ui->layerComboBox->clear();
     connect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
-    int i;
+
     QString key = ui->fileComboBox->currentText();
     for (currentFileIndex = 0; currentFileIndex < pyramidFiles.size(); currentFileIndex++){
         if(pyramidFiles[currentFileIndex]->fileName == key){
             break;
         }
     }
-    for (i = 0; i < pyramidFiles[currentFileIndex]->pyramidLayers.size(); i++){
+
+    for (int i = 0; i < pyramidFiles[currentFileIndex]->pyramidLayers.size(); i++){
         ui->layerComboBox->addItem(QString::number(i));
     }
     currentFile = pyramidFiles[currentFileIndex]->fileName;
-    ui->coeffSpinBox->setValue(pyramidFiles[currentFileIndex]->pyramidCoeff);
+    ui->coeffSpinBox->setValue(pyramidFiles[currentFileIndex]->pyramidCoefficient);
     loadImage();
 }
 
 // Происходит при выборе слоя
-void MainWindow::chooseLayer(){
+void MainWindow::chooseLayer(){       
     int layerNumber = ui->layerComboBox->currentIndex();
     QSize newSize = pyramidFiles[currentFileIndex]->pyramidLayers[layerNumber];
+
     ui->actualSize->clear();
     QString actualSize = QString::number(newSize.width()) + 'x' + QString::number(newSize.height());
     ui->actualSize->setText(actualSize);
+
     if(currentFile != ""){
         QPixmap img(currentFile);
         QSize originalSize = pyramidFiles[currentFileIndex]->fileSize;
@@ -128,10 +129,10 @@ void MainWindow::chooseLayer(){
 }
 
 // Происходит, когда  нажимается кнопка задания коэффициента
-void MainWindow::setCoeff(){
+void MainWindow::setCoefficient(){
     if(currentFile != ""){
-        pyramidFiles[currentFileIndex]->pyramidCoeff = ui->coeffSpinBox->value();
-        pyramidFiles[currentFileIndex]->setLayers();
+        pyramidFiles[currentFileIndex]->pyramidCoefficient = ui->coeffSpinBox->value();
+        pyramidFiles[currentFileIndex]->setLayersSize();
         disconnect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
         ui->layerComboBox->clear();
         connect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
@@ -172,7 +173,7 @@ void MainWindow::setFromCommandLine(QString file, double coeff){
         QMessageBox::warning(this, "Wrong command arguments", tr("Usage: PyramidViewer.exe -file- -coefficient-"));
     }
 
-    this->startCoeff = coeff;
+    this->startCoefficient = coeff;
     this->currentFile = file;
     open(true);
 }

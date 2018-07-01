@@ -4,11 +4,8 @@
 #include <QMainWindow>
 #include "qpyramidview.h"
 #include <QScrollArea>
-
-class QAction;
-class QLabel;
-class QMenu;
-class QPixmap;
+#include <QAction>
+#include <QLabel>
 
 namespace Ui {
     class MainWindow;
@@ -25,17 +22,17 @@ private slots:
     void open(bool isFromCommandLine = false);
     void chooseFile();
     void chooseLayer();
-    void setCoeff();
+    void setCoefficient();
 
 private:
     Ui::MainWindow *ui;
-    QScrollArea* q;
     int currentFileIndex;
-    double startCoeff = 0;
+    double startCoefficient = 0;
+    QScrollArea *q;
     QString currentFile = "";
     QLabel *imageLabel;
     QList<QPyramidView*> pyramidFiles;
-    QMenu* fileMenu;
+    QMenu *fileMenu;
     QAction *openAct;
     QString fileName;
     void sortFiles();

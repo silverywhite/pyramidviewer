@@ -35,6 +35,7 @@ private:
     QMenu* fileMenu;
     QAction *openAct;
     QString fileName;
+    void sortFiles();
     void createAction();
     void createMenu();
     void loadImage();

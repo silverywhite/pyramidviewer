@@ -1,4 +1,5 @@
 #include "qpyramidview.h"
+#include <QtMath>
 
 class QPixmap;
 
@@ -17,6 +18,7 @@ void QPyramidView::setFileSize()
 {
     QPixmap someFile(fileName);
     fileSize = someFile.size();
+    pseudoDiag = qSqrt(qreal((fileSize.height() * fileSize.height()) + (fileSize.width() * fileSize.width())));
 }
 
 // Вычисление нужных размеров для слоев

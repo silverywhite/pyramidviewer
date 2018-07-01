@@ -18,6 +18,7 @@ private:
     QVector<QSize> pyramidLayers;
     QString fileName;
     QSize fileSize;
+    int pseudoDiag;
     int pyramidCoeff = 2;
     void setFileSize();
     void setLayers();

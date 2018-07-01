@@ -50,10 +50,25 @@ void MainWindow::open()
         }
         QPyramidView *someImg = new QPyramidView(fileName);
         pyramidFiles.append(someImg);
+        sortFiles();
         currentFile = fileName;
-        ui->fileComboBox->addItem(fileName);
         ui->fileComboBox->setCurrentText(fileName);
         loadImage();
+    }
+}
+
+// Сортировка файлов по возрастанию диагонали
+void MainWindow::sortFiles(){
+    int sortPlace = pyramidFiles.size()-1;
+    while(sortPlace > 0 && (pyramidFiles[sortPlace]->pseudoDiag <= pyramidFiles[sortPlace-1]->pseudoDiag)){
+        pyramidFiles.swap(sortPlace, sortPlace-1);
+        sortPlace--;
+    }
+    disconnect(ui->fileComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseFile()));
+    ui->fileComboBox->clear();
+    connect(ui->fileComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseFile()));
+    for (int j = 0; j < pyramidFiles.size(); j++){
+        ui->fileComboBox->addItem(pyramidFiles[j]->fileName);
     }
 }
 

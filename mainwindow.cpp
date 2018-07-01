@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),  ui(new Ui::MainW
     q->setWidget(imageLabel);
     ui->verticalLayout->addWidget(q);
 
-    connect(ui->coeffButton, SIGNAL(clicked(bool)), this, SLOT(setCoeff()));
+    connect(ui->coeffButton, SIGNAL(clicked(bool)), this, SLOT(setCoefficient()));
     connect(ui->fileComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseFile()));
     connect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
 

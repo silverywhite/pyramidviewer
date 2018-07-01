@@ -3,27 +3,22 @@
 
 class QPixmap;
 
-QPyramidView::QPyramidView(QString fileName, QWidget * parent): QWidget(parent)
-{
+QPyramidView::QPyramidView(QString fileName, QWidget * parent): QWidget(parent){
     this->fileName = fileName;
     setFileSize();
     setLayers();
 }
 
-QPyramidView::~QPyramidView()
-{
-}
+QPyramidView::~QPyramidView(){}
 
-void QPyramidView::setFileSize()
-{
+void QPyramidView::setFileSize(){
     QPixmap someFile(fileName);
     fileSize = someFile.size();
     pseudoDiag = qSqrt(qreal((fileSize.height() * fileSize.height()) + (fileSize.width() * fileSize.width())));
 }
 
 // Вычисление нужных размеров для слоев
-void QPyramidView::setLayers()
-{
+void QPyramidView::setLayers(){
     pyramidLayers.clear();
     int height = fileSize.height();
     int width = fileSize.width();

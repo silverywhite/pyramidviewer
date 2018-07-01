@@ -5,9 +5,8 @@
 #include <QLabel>
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
-{
+    QMainWindow(parent),  ui(new Ui::MainWindow){
+
     ui->setupUi(this);
 
     imageLabel = new QLabel;
@@ -31,14 +30,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow(){
+
     q->deleteLater();
     delete ui;
 }
 
-void MainWindow::open(bool isFromCommandLine)
-{
+void MainWindow::open(bool isFromCommandLine){
+
     if(!isFromCommandLine){
         fileName = QFileDialog::getOpenFileName(0, "Open File", "", "*.png *.jpg");
     }
@@ -49,12 +48,20 @@ void MainWindow::open(bool isFromCommandLine)
         return;
     else {
         QFile file(fileName);
+        QFileInfo fileinfo(file);
 
-        if (!file.open(QIODevice::ReadOnly)) {
-            QMessageBox::information(this, tr("Unable to open file"),
+        if (!file.open(QIODevice::ReadOnly)){
+            QMessageBox::information(this, "Unable to open file",
                 file.errorString());
             return;
         }
+
+        if (fileinfo.suffix() != "jpg" && fileinfo.suffix() != "png"){
+            QMessageBox::information(this, tr("Unsupported file format"),
+                "Please, choose jpeg or png file");
+            return;
+        }
+
         QPyramidView *someImg = new QPyramidView(fileName);
         pyramidFiles.append(someImg);
         sortFiles();
@@ -65,7 +72,6 @@ void MainWindow::open(bool isFromCommandLine)
             ui->coeffButton->click();
         }
         loadImage();
-        //qDebug() << currentFile;
     }
 }
 
@@ -85,8 +91,7 @@ void MainWindow::sortFiles(){
 }
 
 // Происходит при выборе файла
-void MainWindow::chooseFile()
-{
+void MainWindow::chooseFile(){
     disconnect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
     ui->layerComboBox->clear();
     connect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
@@ -106,8 +111,7 @@ void MainWindow::chooseFile()
 }
 
 // Происходит при выборе слоя
-void MainWindow::chooseLayer()
-{
+void MainWindow::chooseLayer(){
     int layerNumber = ui->layerComboBox->currentIndex();
     QSize newSize = pyramidFiles[currentFileIndex]->pyramidLayers[layerNumber];
     ui->actualSize->clear();
@@ -124,7 +128,7 @@ void MainWindow::chooseLayer()
 }
 
 // Происходит, когда  нажимается кнопка задания коэффициента
-void MainWindow::setCoeff() {
+void MainWindow::setCoeff(){
     if(currentFile != ""){
         pyramidFiles[currentFileIndex]->pyramidCoeff = ui->coeffSpinBox->value();
         pyramidFiles[currentFileIndex]->setLayers();
@@ -137,23 +141,20 @@ void MainWindow::setCoeff() {
     }
 }
 
-void MainWindow::createAction()
-{
+void MainWindow::createAction(){
     openAct = new QAction(tr("&Open..."), this);
     openAct->setShortcuts(QKeySequence::Open);
     openAct->setStatusTip(tr("Open an existing file"));
     connect(openAct, &QAction::triggered, this, &MainWindow::open);
 }
 
-
-void MainWindow::createMenu()
-{
+void MainWindow::createMenu(){
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(openAct);
     fileMenu->addSeparator();
 }
 
-void MainWindow::loadImage() {
+void MainWindow::loadImage(){
     QPixmap img(500,500);
     if(currentFile == ""){
         QColor white(255,255,255);
@@ -167,6 +168,10 @@ void MainWindow::loadImage() {
 }
 
 void MainWindow::setFromCommandLine(QString file, double coeff){
+    if(!(file.contains("/"))){
+        QMessageBox::warning(this, "Wrong command arguments", tr("Usage: PyramidViewer.exe -file- -coefficient-"));
+    }
+
     this->startCoeff = coeff;
     this->currentFile = file;
     open(true);

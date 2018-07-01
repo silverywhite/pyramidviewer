@@ -4,8 +4,7 @@
 #include <QWidget>
 #include <QVector>
 
-class QPyramidView : public QWidget
-{
+class QPyramidView : public QWidget {
     friend class MainWindow;
 
     Q_OBJECT

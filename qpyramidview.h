@@ -22,7 +22,7 @@ private:
     QVector<QSize> pyramidLayers;
     QString fileName;
     QSize fileSize;
-    int pseudoDiagonal;
+    qreal pseudoDiagonal;
     double pyramidCoefficient = 2;
     void calculateLayersSize();
 };

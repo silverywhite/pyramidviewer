@@ -76,7 +76,7 @@ void MainWindow::open(bool isFromCommandLine){
 void MainWindow::sortFiles(){
     int sortPlace = pyramidFiles.size()-1;
 
-    while(sortPlace > 0 && (pyramidFiles[sortPlace]->pseudoDiagonal <= pyramidFiles[sortPlace-1]->pseudoDiagonal)){
+    while(sortPlace > 0 && (pyramidFiles[sortPlace]->getPseudoDiagonal() <= pyramidFiles[sortPlace-1]->getPseudoDiagonal())){
         pyramidFiles.swap(sortPlace, sortPlace-1);
         sortPlace--;
     }
@@ -85,7 +85,7 @@ void MainWindow::sortFiles(){
     ui->fileComboBox->clear();
     fileComboBoxBlocker.unblock();
     for (int j = 0; j < pyramidFiles.size(); j++){
-        ui->fileComboBox->addItem(pyramidFiles[j]->fileName);
+        ui->fileComboBox->addItem(pyramidFiles[j]->getFileName());
     }
 }
 
@@ -97,23 +97,23 @@ void MainWindow::chooseFile(){
 
     QString key = ui->fileComboBox->currentText();
     for (currentFileIndex = 0; currentFileIndex < pyramidFiles.size(); currentFileIndex++){
-        if(pyramidFiles[currentFileIndex]->fileName == key){
+        if(pyramidFiles[currentFileIndex]->getFileName() == key){
             break;
         }
     }
 
-    for (int i = 0; i < pyramidFiles[currentFileIndex]->pyramidLayers.size(); i++){
+    for (int i = 0; i < pyramidFiles[currentFileIndex]->getNumberOfLayers(); i++){
         ui->layerComboBox->addItem(QString::number(i));
     }
-    currentFile = pyramidFiles[currentFileIndex]->fileName;
-    ui->coeffSpinBox->setValue(pyramidFiles[currentFileIndex]->pyramidCoefficient);
+    currentFile = pyramidFiles[currentFileIndex]->getFileName();
+    ui->coeffSpinBox->setValue(pyramidFiles[currentFileIndex]->getPyramidCoefficient());
     loadImage();
 }
 
 // Происходит при выборе слоя
 void MainWindow::chooseLayer(){       
     int layerNumber = ui->layerComboBox->currentIndex();
-    QSize newSize = pyramidFiles[currentFileIndex]->pyramidLayers[layerNumber];
+    QSize newSize = pyramidFiles[currentFileIndex]->getLayerSize(layerNumber);
 
     ui->actualSize->clear();
     QString actualSize = QString("%1x%2").arg(QString::number(newSize.width())).arg(QString::number(newSize.height()));
@@ -121,7 +121,7 @@ void MainWindow::chooseLayer(){
 
     if(currentFile != ""){
         QPixmap img(currentFile);
-        QSize originalSize = pyramidFiles[currentFileIndex]->fileSize;
+        QSize originalSize = pyramidFiles[currentFileIndex]->getFileSize();
         img = img.scaled(newSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         img = img.scaled(originalSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
         imageLabel->setPixmap(img);
@@ -132,12 +132,11 @@ void MainWindow::chooseLayer(){
 // Происходит, когда  нажимается кнопка задания коэффициента
 void MainWindow::setCoefficient(){
     if(currentFile != ""){
-        pyramidFiles[currentFileIndex]->pyramidCoefficient = ui->coeffSpinBox->value();
-        pyramidFiles[currentFileIndex]->calculateLayersSize();
+        pyramidFiles[currentFileIndex]->setNewPyramidCoefficient(ui->coeffSpinBox->value());
         QSignalBlocker layerComboBoxBlocker(ui->layerComboBox);
         ui->layerComboBox->clear();
         layerComboBoxBlocker.unblock();
-        for (int i = 0; i < pyramidFiles[currentFileIndex]->pyramidLayers.size(); i++){
+        for (int i = 0; i < pyramidFiles[currentFileIndex]->getNumberOfLayers(); i++){
             ui->layerComboBox->addItem(QString::number(i));
         }
     }

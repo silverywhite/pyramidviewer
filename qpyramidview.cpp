@@ -23,3 +23,32 @@ void QPyramidView::calculateLayersSize(){
         pyramidLayers.push_back(QSize(width, height));
     }
 }
+
+int QPyramidView::getPseudoDiagonal(){
+    return pseudoDiagonal;
+}
+
+QString QPyramidView::getFileName(){
+    return fileName;
+}
+
+int QPyramidView::getNumberOfLayers(){
+    return pyramidLayers.size();
+}
+
+double QPyramidView::getPyramidCoefficient(){
+    return pyramidCoefficient;
+}
+
+QSize QPyramidView::getLayerSize(int layerNumber){
+    return pyramidLayers[layerNumber];
+}
+
+QSize QPyramidView::getFileSize(){
+    return fileSize;
+}
+
+void QPyramidView::setNewPyramidCoefficient(double newCoefficient){
+    pyramidCoefficient = newCoefficient;
+    calculateLayersSize();
+}

@@ -29,7 +29,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),  ui(new Ui::MainW
 }
 
 MainWindow::~MainWindow(){
-    q->deleteLater();
+    for (int i=0; i < pyramidFiles.size(); i++){
+        delete pyramidFiles.at(i);
+    }
+    pyramidFiles.clear();
+    delete imageLabel;
+    delete q;
+    delete fileMenu;
+    delete openAct;
     delete ui;
 }
 

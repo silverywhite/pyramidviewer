@@ -20,9 +20,9 @@ public:
 
 private slots:
     void open(bool isFromCommandLine = false);
+    void setCoefficient();
     void chooseFile();
     void chooseLayer();
-    void setCoefficient();
 
 private:
     Ui::MainWindow *ui;

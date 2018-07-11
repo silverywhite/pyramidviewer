@@ -4,18 +4,14 @@
 
 QPyramidView::QPyramidView(QString fileName, QWidget * parent): QWidget(parent){
     this->fileName = fileName;
-    getFileSize();
-    setLayersSize();
-}
-
-void QPyramidView::getFileSize(){
     QPixmap someFile(fileName);
     fileSize = someFile.size();
     pseudoDiagonal = qSqrt(qreal((fileSize.height() * fileSize.height()) + (fileSize.width() * fileSize.width())));
+    calculateLayersSize();
 }
 
 // Вычисление нужных размеров для слоев
-void QPyramidView::setLayersSize(){
+void QPyramidView::calculateLayersSize(){
     pyramidLayers.clear();
     int height = fileSize.height();
     int width = fileSize.width();

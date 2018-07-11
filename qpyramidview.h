@@ -18,8 +18,7 @@ private:
     QSize fileSize;
     int pseudoDiagonal;
     double pyramidCoefficient = 2;
-    void getFileSize();
-    void setLayersSize();
+    void calculateLayersSize();
 };
 
 #endif // QPYRAMIDVIEW_H

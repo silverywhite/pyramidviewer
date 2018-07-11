@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QtWidgets>
+#include <QSignalBlocker>
 #include <QScrollArea>
 #include <QLabel>
 
@@ -19,9 +20,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),  ui(new Ui::MainW
     q->setWidget(imageLabel);
     ui->verticalLayout->addWidget(q);
 
-    connect(ui->coeffButton, SIGNAL(clicked(bool)), this, SLOT(setCoefficient()));
-    connect(ui->fileComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseFile()));
-    connect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
+    connect(ui->coeffButton, &QPushButton::clicked, this, setCoefficient);
+    connect(ui->fileComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, chooseFile);
+    connect(ui->layerComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, chooseLayer);
 
     createAction();
     createMenu();
@@ -80,9 +81,9 @@ void MainWindow::sortFiles(){
         sortPlace--;
     }
 
-    disconnect(ui->fileComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseFile()));
+    QSignalBlocker fileComboBoxBlocker(ui->fileComboBox);
     ui->fileComboBox->clear();
-    connect(ui->fileComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseFile()));
+    fileComboBoxBlocker.unblock();
     for (int j = 0; j < pyramidFiles.size(); j++){
         ui->fileComboBox->addItem(pyramidFiles[j]->fileName);
     }
@@ -90,9 +91,9 @@ void MainWindow::sortFiles(){
 
 // Происходит при выборе файла
 void MainWindow::chooseFile(){
-    disconnect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
+    QSignalBlocker layerComboBoxBlocker(ui->layerComboBox);
     ui->layerComboBox->clear();
-    connect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
+    layerComboBoxBlocker.unblock();
 
     QString key = ui->fileComboBox->currentText();
     for (currentFileIndex = 0; currentFileIndex < pyramidFiles.size(); currentFileIndex++){
@@ -115,7 +116,7 @@ void MainWindow::chooseLayer(){
     QSize newSize = pyramidFiles[currentFileIndex]->pyramidLayers[layerNumber];
 
     ui->actualSize->clear();
-    QString actualSize = QString::number(newSize.width()) + 'x' + QString::number(newSize.height());
+    QString actualSize = QString("%1x%2").arg(QString::number(newSize.width())).arg(QString::number(newSize.height()));
     ui->actualSize->setText(actualSize);
 
     if(currentFile != ""){
@@ -132,10 +133,10 @@ void MainWindow::chooseLayer(){
 void MainWindow::setCoefficient(){
     if(currentFile != ""){
         pyramidFiles[currentFileIndex]->pyramidCoefficient = ui->coeffSpinBox->value();
-        pyramidFiles[currentFileIndex]->setLayersSize();
-        disconnect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
+        pyramidFiles[currentFileIndex]->calculateLayersSize();
+        QSignalBlocker layerComboBoxBlocker(ui->layerComboBox);
         ui->layerComboBox->clear();
-        connect(ui->layerComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseLayer()));
+        layerComboBoxBlocker.unblock();
         for (int i = 0; i < pyramidFiles[currentFileIndex]->pyramidLayers.size(); i++){
             ui->layerComboBox->addItem(QString::number(i));
         }

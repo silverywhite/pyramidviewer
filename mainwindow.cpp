@@ -33,7 +33,7 @@ MainWindow::~MainWindow(){
     delete ui;
 }
 
-void MainWindow::open(bool isFromCommandLine){
+void MainWindow::open(const bool& isFromCommandLine){
     if(!isFromCommandLine){
         fileName = QFileDialog::getOpenFileName(0, "Open File", "", "*.png *.jpg");
     }
@@ -155,7 +155,7 @@ void MainWindow::createMenu(){
     fileMenu->addSeparator();
 }
 
-void MainWindow::loadImage(){
+void MainWindow::loadImage() const{
     QPixmap img(500,500);
     if(currentFile == ""){
         QColor white(255,255,255);
@@ -168,8 +168,10 @@ void MainWindow::loadImage(){
     q->update();
 }
 
-void MainWindow::setFromCommandLine(QString file, double coeff){
-    if(!(file.contains("/"))){
+void MainWindow::setFromCommandLine(const QString& file, const double& coeff){
+
+    bool isPathToFile = (file.contains("/") || file.contains("\\"));
+    if(!isPathToFile){
         QMessageBox::warning(this, "Wrong command arguments", tr("Usage: PyramidViewer.exe -file- -coefficient-"));
     }
 

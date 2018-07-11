@@ -10,13 +10,13 @@ class QPyramidView : public QWidget {
 
 public:
     QPyramidView(QString fileName, QWidget *parent = 0);
-    int getPseudoDiagonal();
-    int getNumberOfLayers();
-    double getPyramidCoefficient();
-    QSize getLayerSize(int layerNumber);
-    QString getFileName();
-    QSize getFileSize();
-    void setNewPyramidCoefficient(double newCoefficient);
+    int getPseudoDiagonal() const;
+    int getNumberOfLayers() const;
+    double getPyramidCoefficient() const;
+    QSize getLayerSize(const int& layerNumber) const;
+    QString getFileName() const;
+    QSize getFileSize() const;
+    void setNewPyramidCoefficient(const double& newCoefficient);
 
 private:
     QVector<QSize> pyramidLayers;

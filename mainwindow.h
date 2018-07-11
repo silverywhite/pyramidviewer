@@ -16,10 +16,10 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void setFromCommandLine(QString file, double coeff);
+    void setFromCommandLine(const QString& file, const double& coeff);
 
 private slots:
-    void open(bool isFromCommandLine = false);
+    void open(const bool& isFromCommandLine = false);
     void setCoefficient();
     void chooseFile();
     void chooseLayer();
@@ -38,7 +38,7 @@ private:
     void sortFiles();
     void createAction();
     void createMenu();
-    void loadImage();
+    void loadImage() const;
 };
 
 #endif // MAINWINDOW_H
